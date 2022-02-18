@@ -88,8 +88,8 @@ if NUM_SUBJECT == 63:
     DATA_PATH_X = "/fmri_gene_full/"
     DATA_PATH_Y = "/fmri_gene_full/"
     DATA_PATH_OUTPUT = MYFILENAME
-    MASK_PATH_FILE_NAME = "/mask/mask_fmri_pica_v4.nii.gz"
-    MASK_PATH_X = "/mask/"
+    MASK_PATH_FILE_NAME = "/computation/assets/mask_fmri_pica_v4.nii.gz"
+    MASK_PATH_X = "/computation/assets/"
 
 if ICASSO:
     ICA_RUN_AVERAGE = False
@@ -208,8 +208,8 @@ Global_NCOM_Y2 = Global_NCOM_Y
 def setUp(self):
 
     printme = ""
-    MASK_PATH_FILE_NAME = str(self.state['baseDirectory']) +  "/mask/mask_fmri_pica_v4.nii.gz"
-    MASK_PATH_X = self.state['baseDirectory'] + "/mask/"
+    MASK_PATH_FILE_NAME = os.path.join('/computation/assets/mask_fmri_pica_v4.nii.gz')
+    MASK_PATH_X = "/computation/assets/"
     DATA_PATH_X = self.state['baseDirectory'] + "/fmri_gene_full/"
     DATA_PATH_Y = self.state['baseDirectory'] + "/fmri_gene_full/"
     DATA_PATH_OUTPUT = self.state['outputDirectory'] + str(MYFILENAME)

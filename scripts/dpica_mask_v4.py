@@ -12,9 +12,6 @@ import numpy as np
 sep = os.sep
 
 
-MASK_FILE_Name = "ABCD_mask_fmri_dpica_v1.nii.gz"
-
-
 def pica_masked_Modality_X_creation( data_path_input, mask_file_location_input):
     mask_data = nib.load(mask_file_location_input).get_fdata()  #
 
@@ -77,25 +74,16 @@ def pica_Modality_XY_creation_from_file1(data_path_input, fmri_file_name):
 
 def pica_import_csv_to_array(data_path_input, file_name_input):
     import csv
-    ########################################################
-    # folder_name = os.listdir(data_path_input)
+
     file_name = os.path.join(data_path_input, file_name_input)
 
     array_1d_output = []
     with open(file_name, newline='') as csvfile:
         array_1d_output = list(csv.reader(csvfile))
 
-    # array_1d_output = []
-    # array_1d_output.append(np.genfromtxt(file_name, dtype=float ))
 
-    # array_1d_output = np.asarray(array_1d_output)
     array_1d_output = np.asarray(array_1d_output, dtype=float)
-    # np.array(x, dtype=float)
-    # array_1d_output = np.squeeze(array_1d_output, 0)
-    # print("array_1d_output.shape = ", array_1d_output.shape)
-    # print("array_1d_output = ", array_1d_output)
 
-    ########################################################
-    # return (array_1d_output, array_1d_output.shape[0], array_1d_output.shape[1])
+
     return (array_1d_output)
 

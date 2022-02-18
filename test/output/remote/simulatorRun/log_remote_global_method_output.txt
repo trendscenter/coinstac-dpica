@@ -1,21 +1,16 @@
 ==Global logging==
-Global PCA starting...
+==Global Calling dpica starting.==
 Remote_Utils starting...
-state[baseDirectory]= /input/remote/simulatorRun
-sep = /
 
-base_directory = /input/remote/simulatorRun/
-
-Calling dpica.dpica_global_methods 
-dpica_global_methods starting
+==dpica.dpica_global_methods starting== 
+==dpica_global_methods starting==
 ==============Global Parameters==============
 SITE_NUM = 2
 NUM_SUBJECT = 63
-MASK_PATH_FILE_NAME =  /input/remote/simulatorRun/mask/mask_fmri_pica_v4.nii.gz
-MASK_PATH_X =  /input/remote/simulatorRun/mask/
+MASK_PATH_FILE_NAME =  /computation/assets/mask_fmri_pica_v4.nii.gz
+MASK_PATH_X =  /computation/assets/
 DATA_PATH_X =  /input/remote/simulatorRun/fmri_gene_full/
 DATA_PATH_Y =  /input/remote/simulatorRun/fmri_gene_full/
-
 DATA_PATH_OUTPUT =  /output/remote/simulatorRun/F_Nowhite_ConCon0.17_ConCom1_RUN2_I_E0.001_25_15_5_3_False/
 DATA_SITES_X =  /input/remote/simulatorRun/Clean_data/
 MAX_WEIGHT =  100000000.0
@@ -50,16 +45,12 @@ NCOM_X1 =  25
 NCOM_Y1 =  15
 NCOM_X2 =  25
 NCOM_Y2 =  15
-NCOM_X3 =  25
-NCOM_Y3 =  15
 Global_NCOM_X =  5
 Global_NCOM_Y =  3
 Global_NCOM_X1 =  5
 Global_NCOM_Y1 =  3
 Global_NCOM_X2 =  5
 Global_NCOM_Y2 =  3
-Global_NCOM_X3 =  5
-Global_NCOM_Y3 =  3
 signsbias =  0.02
 ANNEAL =  0.9
 MAX_STEP =  1000
@@ -92,7 +83,7 @@ NCOM_All_X =[25. 25.]
 NCOM_All_Y =[15. 15.]
 NVOX_All_X =[57705. 57705.]
 NVOX_All_Y =[367. 367.]
-[LOG][Flow_3_Global_U]Loading Global - Loaded time is 0:00:05.693985
+[LOG][Flow_3_Global_U]Loading Global - Loaded time is 0:00:04.250646
 [LOG][Flow_3_Global_U, White, and deWhite]=====Stop=====
 
 [LOG][Flow_4_Global_PCA]=====Start=====
@@ -102,4 +93,5 @@ Modality_X === GlobalPCA_U_X.shape (r_X x d_X)(5, 57705)GlobalPCA_White_X (r_X x
 Modality_Y === GlobalPCA_U_Y.shape (r_Y x d_Y)(3, 367)GlobalPCA_White_Y (r_Y x sr_Y) = (3, 30)GlobalPCA_dewhite_Y (sr_Y x r_Y ) = (30, 3)
 [LOG][Flow_4_Global_PCA]=====End=====
 
-Completed dpica.dpica_global_methods.
+==dpica_global_methods completed==
+==dpica.dpica_global_methods completed== 

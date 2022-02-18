@@ -76,16 +76,6 @@ def pica_2d_correlate6(Corr_X, Corr_Y,  data_path_save, data_file_save, screensh
         # Reverse 
         coef_X_Y_flat = rev_coef_X_Y_flat[::-1]
 
-        # print('coef_X_Y_flat   = ')
-        # print('coef_X_Y_flat   = ', coef_X_Y_flat  )
-        # for x in range(5):
-        #     print(coef_X_Y_flat[x], sep = ", ")
-
-        # print('rev_coef_X_Y_flat   = '  )
-        # print('rev_coef_X_Y_flat   = ', rev_coef_X_Y_flat  )
-        # for x in range(5):
-        #     print(rev_coef_X_Y_flat[x], sep = ", ")
-
     if pltshow  :
         plt.matshow(Coef_X_Y)
         plt.colorbar( shrink=0.75)
@@ -106,8 +96,6 @@ def pica_2d_correlate7(Corr_X, Corr_Y,  data_path_save, data_file_save, screensh
     # Reshap to one quarter.      
     ic_num = int((Coef_X_Y.shape[0])/2)
     Coef_X_Y = Coef_X_Y[:ic_num,-ic_num:]
-    # print('Coef_X_Y  rehape (N) x (N))', Coef_X_Y.shape )    #  (8, 8)
-    # print('Coef_X_Y   = ', Coef_X_Y  )    
 
     # Round an array to the given number of decimals.
     Coef_X_Y = np.round(Coef_X_Y,10)
@@ -122,20 +110,10 @@ def pica_2d_correlate7(Corr_X, Corr_Y,  data_path_save, data_file_save, screensh
         # Reverse 
         coef_X_Y_flat = rev_coef_X_Y_flat[::-1]
 
-        # print('coef_X_Y_flat   = ')
-        # print('coef_X_Y_flat   = ', coef_X_Y_flat  )     
-        # for x in range(5):
-        #     print(coef_X_Y_flat[x], sep = ", ")
-
-        # print('rev_coef_X_Y_flat   = '  )
-        # print('rev_coef_X_Y_flat   = ', rev_coef_X_Y_flat  )   
-        # for x in range(5):
-        #     print(rev_coef_X_Y_flat[x], sep = ", ")
 
     if pltshow  :
         plt.matshow(Coef_X_Y)
         plt.colorbar( shrink=0.75)
-        # plt.clim(-0.4, 0.4)
         # changing the rc parameters and plotting a line plot
         plt.rcParams['figure.figsize'] = [2, 2]           
         plt.show()

@@ -1,0 +1,95 @@
+==Local logging==
+==Local PCA starting.==
+
+==dpica.dpica_local_methods staring.== 
+==dpica_local_methods starting==
+==============Global Parameters==============
+SITE_NUM = 2
+NUM_SUBJECT = 63
+MASK_PATH_FILE_NAME =  /computation/assets/mask_fmri_pica_v4.nii.gz
+MASK_PATH_X =  /computation/assets/
+DATA_PATH_X =  /input/local1/simulatorRun/fmri_gene_full/
+DATA_PATH_Y =  /input/local1/simulatorRun/fmri_gene_full/
+DATA_PATH_OUTPUT =  /output/local1/simulatorRun/F_Nowhite_ConCon0.17_ConCom1_RUN2_I_E0.001_25_15_5_3_False/
+DATA_SITES_X =  /input/local1/simulatorRun/Clean_data/
+MAX_WEIGHT =  100000000.0
+DEFAULT_STOP =  1e-06
+DEFAULT_ANNEALDEG =  60
+DEFAULT_ANNEALSTEP =  0.9
+DEFAULT_EXTANNEAL =  0.98
+DEFAULT_MAXSTEPS =  1000
+DEFAULT_MOMENTUM =  0.0
+DEFAULT_BLOWUP =  1000000000.0
+DEFAULT_BLOWUP_FAC =  0.8
+DEFAULT_RESTART_FAC =  0.9
+MIN_LRATE =  1e-06
+MAX_LRATE =  0.1
+DEFAULT_EXTENDED =  0
+DEFAULT_EXTBLOCKS =  1
+DEFAULT_NSUB =  1
+DEFAULT_EXTMOMENTUM =  0.5
+SIGNCOUNT_THRESHOLD =  25
+DEFAULT_SPHEREFLAG =  on
+DATA_SDEFAULT_PCAFLAGITES =  off
+DEFAULT_POSACTFLAG =  on
+DEFAULT_VERBOSE =  1
+DEFAULT_BIASFLAG =  1
+CONSTRAINED_COMPONENTS =  1
+CONSTRAINED_CONNECTION =  0.17
+CONSTRAINED_CONNECTION_AUTO =  False
+DATA_ENDURANCESITES =  -0.001
+NCOM_X =  25
+NCOM_Y =  15
+NCOM_X1 =  25
+NCOM_Y1 =  15
+NCOM_X2 =  25
+NCOM_Y2 =  15
+Global_NCOM_X =  5
+Global_NCOM_Y =  3
+Global_NCOM_X1 =  5
+Global_NCOM_Y1 =  3
+Global_NCOM_X2 =  5
+Global_NCOM_Y2 =  3
+signsbias =  0.02
+ANNEAL =  0.9
+MAX_STEP =  1000
+DATA_SITES =  siteAll63.txt
+ICA_RUN_NUMBER =  2
+ICA_RUN_AVERAGE =  False
+ICA_RUN_ICASSO =  True
+ENDURANCE =  -0.001
+CRATE_X =  1
+CRATE_Y =  1
+CRATE_PERCENT =  0.9
+CRATE_OUTBOUND_PERCENT =  0.9
+B_DATASET_FIT =  
+B_DATASET_ABCD =  
+B_DATASET_777 =  
+B_DATASET_XY_SWITCH =  
+
+[LOG][def_setUp]+++++Set up start+++++
+
+[LOG][Flow_1_Setup]=====Loading Local Modality_X - Start =====
+
+[LOG][Flow_1_Setup]=====Loading Local Modality_X - Start =====
+[LOG][Flow_1_Setup]=====Loading Local Modality_Y - Start =====
+
+[LOG][Flow_1_Setup]=====Loading Local Modality_X - Start =====
+[LOG][Flow_1_Setup]=====Loading Local Modality_Y - Start =====
+[LOG][Flow_1_Setup]=====Loading Local Modality_Y - Finish =====
+[LOG][Flow_1_Setup]=====Print initial parameter number=====
+NSUB_X1 N_X1 = 32 NVOX_X1  d_X1 = 57705 NCOM_X1  r_X1 = 25
+NSUB_Y1 N_Y1 = 32 NVOX_Y1  d_Y1  = 367 NCOM_Y1  r_Y1 = 15
+[LOG][Flow_1_Setup]=====Print all Modality data=====
+Modality_X1 Input===X_X1.shape (N_X1 x d_X1)(32, 57705) NCOMP_X1 (r_X1) = 25
+Modality_Y1 Input===X_Y1.shape (N_Y1 x d_Y1)(32, 367) NCOMP_Y1 (r_Y1) = 15
+[LOG][def_setUp]+++++Set up finish+++++
+
+[LOG][Flow_2_Local_PCA]=====Start=====
+Modality_X1 === U_X1.shape (r_X1 x d_X1)(25, 57705)L_white_X1 (r_X1 x N_X1) = (25, 32)L_dewhite_X1 (N_X1 x r_X1 ) = (32, 25)
+Modality_Y1 === U_Y1.shape (r_Y1 x d_Y1)(15, 367)L_white_Y1 (r_Y1 x N_Y1) = (15, 32)L_dewhite_X1 (N_Y1 x r_Y1 ) = (32, 15)
+[LOG][Flow_2_Local_PCA]=====End=====
+
+==dpica_local_methods completed.==
+==dpica.dpica_local_methods completed.== 
+==Local PCA completed.==
