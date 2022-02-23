@@ -100,7 +100,7 @@ else:
 
 
 ANNEAL = 0.90
-MAX_STEP = 1000  
+MAX_STEP = 1000
 SITE_NUM = 2
 
 ##############  Declare defaults used below   ##############
@@ -210,8 +210,8 @@ def setUp(self):
     printme = ""
     MASK_PATH_FILE_NAME = os.path.join('/computation/assets/mask_fmri_pica_v4.nii.gz')
     MASK_PATH_X = "/computation/assets/"
-    DATA_PATH_X = self.state['baseDirectory'] + "/fmri_gene_full/"
-    DATA_PATH_Y = self.state['baseDirectory'] + "/fmri_gene_full/"
+    DATA_PATH_X = self.state['baseDirectory']
+    DATA_PATH_Y = self.state['baseDirectory'] 
     DATA_PATH_OUTPUT = self.state['outputDirectory'] + str(MYFILENAME)
     DATA_SITES_X = self.state['baseDirectory'] + "/Clean_data/"
 
@@ -958,7 +958,7 @@ def diagsqrts(w):
     D = np.diag(np.sqrt(w))
     return D, Di
 
-def pca_whiten7(x2d_input, n_comp, b_mean, b_normalize):    
+def pca_whiten7(x2d_input, n_comp, b_mean, b_normalize):
     """ data Whitening  ==> pca_whiten6 is pca_whiten3 without whitening.
     *Input
     x2d : 2d data matrix of observations by variables
@@ -975,11 +975,11 @@ def pca_whiten7(x2d_input, n_comp, b_mean, b_normalize):
         x2d = x2d_input
     else :          # Remove mean
         x2d = x2d_input - x2d_input.mean(axis=1).reshape((-1, 1))
-        
+
     NSUB, NVOX = x2d.shape
     if NSUB > NVOX:
-        cov = np.dot(x2d.T, x2d) / (NSUB - 1)    
-        w, v = eigh(cov, eigvals=(NVOX - n_comp, NVOX - 1))    
+        cov = np.dot(x2d.T, x2d) / (NSUB - 1)
+        w, v = eigh(cov, eigvals=(NVOX - n_comp, NVOX - 1))
         D, Di = diagsqrts(w)
         u = np.dot(dot(x2d, v), Di)
         x_white = v.T
@@ -996,7 +996,7 @@ def pca_whiten7(x2d_input, n_comp, b_mean, b_normalize):
             white = np.dot(Di, u.T)
             x_white = np.dot(white, x2d)
             dewhite = np.dot(u, D)
-        else :       
+        else :
             white = u.T
             x_white = np.dot(white, x2d) # c
             dewhite = u
@@ -1010,7 +1010,7 @@ def weight_update4(weights, x_white, bias1, lrate1, b_exp):
     x_white: whitened data
     bias1: current estimated bias
     lrate1: current learning rate
-    b_exp : experiment 
+    b_exp : experiment
 
     * Output
     weights : updated mixing matrix
@@ -1022,7 +1022,7 @@ def weight_update4(weights, x_white, bias1, lrate1, b_exp):
     last1 = (int(np.fix((NVOX/block1-1)*block1+1)))
 
     if not b_exp :
-        permute1 = permutation(NVOX) 
+        permute1 = permutation(NVOX)
     else :
         permute1 = range(NVOX)
     for start in range(0, last1, block1):
@@ -1032,10 +1032,10 @@ def weight_update4(weights, x_white, bias1, lrate1, b_exp):
         else:
             tt2 = (NVOX)
             block1 = (NVOX - start)
-        
+
         unmixed = (np.dot(weights, x_white[:, permute1[start:tt2]]) + bias1)
         logit = 1 / (1 + np.exp(-unmixed))
-        weights = (weights + lrate1 * np.dot( 
+        weights = (weights + lrate1 * np.dot(
             block1 * np.eye(NCOMP) + np.dot( (1-2*logit), unmixed.T), weights))
 
         bias1 = (bias1 + lrate1 * (1-2*logit).sum(axis=1).reshape(bias1.shape))
@@ -1046,7 +1046,7 @@ def weight_update4(weights, x_white, bias1, lrate1, b_exp):
             weights = (np.eye(NCOMP))
             bias1 = (np.zeros((NCOMP, 1)))
             error = 1
-           
+
             if lrate1 > 1e-6 and \
             matrix_rank(x_white) < NCOMP:
                 a = 1
@@ -1070,7 +1070,7 @@ def weight_update4(weights, x_white, bias1, lrate1, b_exp):
 def ica_fuse_falsemaxdetect(self, data, trendPara, LtrendPara = 0.0):
 
 
-        if  trendPara is None: 
+        if  trendPara is None:
             LtrendPara= 1e-4
             trendPara= -1e-3
         elif LtrendPara == 0.0 :
@@ -1078,33 +1078,33 @@ def ica_fuse_falsemaxdetect(self, data, trendPara, LtrendPara = 0.0):
         # end if
 
         if not (LtrendPara) :
-            LtrendPara = 0.0001 
+            LtrendPara = 0.0001
         if not (trendPara) :
             trendPara= -0.001
-        
+
         Overindex = 0
 
         n = np.count_nonzero(data)
 
         if  n > 60 :
             x = np.arange(50)
-            y = data[n-49:n+1] 
+            y = data[n-49:n+1]
             y = data[n-49:n+1] - np.mean(data[n-49:n+1])
-            p = np.polyfit(x,y,1)            
+            p = np.polyfit(x,y,1)
 
             if abs(p[0]) < LtrendPara :
                 Overindex = 1
             # end if
         # end if
 
-        if not Overindex : 
-            x = np.arange(5)       
-            y = data[n-4:n+1]      
+        if not Overindex :
+            x = np.arange(5)
+            y = data[n-4:n+1]
             y = data[n-4:n+1] - np.mean(data[n-4:n+1])
             p = np.polyfit(x,y,1)
             if p[0] < trendPara :
                     Overindex = 1
-            # end if        
+            # end if
         # end if
 
         return (Overindex)
@@ -1114,10 +1114,10 @@ def ica_fuse_corr(self, x, y):  # x (48,8) y (48,8)
 
     if not ('y' in locals() ):
         y = x
-        [ny1, ny2] = y.shape     
+        [ny1, ny2] = y.shape
     else :
-        ny2 = y.shape[1] 
-    
+        ny2 = y.shape[1]
+
     # Check dimensions of x and y
     if (x.shape[0] != y.shape[0] ) :
         a = 1
@@ -1151,7 +1151,7 @@ def ica_fuse_corr2(self, x, y): # x 43x1   y = 43x1
 
     return corr_coeff
 
-def find_argmax_v2( coef_1_2, axis_input=1): # 
+def find_argmax_v2( coef_1_2, axis_input=1): #
     # Calculate the indices of the maximum values along an axis
     # Input :
     #  - coef_1_2 : corrcoef between matrix 1 and matrix 2
@@ -1162,7 +1162,7 @@ def find_argmax_v2( coef_1_2, axis_input=1): #
     NCOMP = coef_1_2.shape[0]
     Corr_matrix = abs(coef_1_2)
     coef_max_index_array = np.zeros(NCOMP).astype(int)
-    for i in range(NCOMP) :        
+    for i in range(NCOMP) :
         amax  = np.amax(Corr_matrix)
         amax_index = np.where(Corr_matrix == amax)
         amax_row = amax_index[0]
@@ -1170,21 +1170,21 @@ def find_argmax_v2( coef_1_2, axis_input=1): #
         amax_row = amax_row[0]
         amax_column = amax_column[0]
 
-        if axis_input == 1 : 
+        if axis_input == 1 :
             coef_max_index_array[amax_row] = int(amax_column)
-        elif axis_input == 0 :                     
+        elif axis_input == 0 :
             coef_max_index_array[amax_column] = int(amax_row)
         Corr_matrix[amax_row,:] = 0
         Corr_matrix[:,amax_column] = 0
 
     return coef_max_index_array   #
 
-def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):    
-    """Computes average ICA 
+def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
+    """Computes average ICA
     *Input
         w : Globa W unmixer matrix from Infomax (r x r) or (components x components)
         s : Source matrix from Infomax (r x d) or (components x variable voxel)
-        num_ica_runs : Number of times to run ica    
+        num_ica_runs : Number of times to run ica
         XY  : Modality X or Y
     *Output
         A : GlobalA_mixer_X : mixing matrix
@@ -1211,7 +1211,7 @@ def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
     # Using the ordered cross-correlation algorithm
     printme = printme + "[LOG][Multirun ICA] Clustering " + "\n"
     data_path_save = self.state['outputDirectory'] + os.sep
-    # Define w0 index 
+    # Define w0 index
     w0_ordered = np.array(w)[0,:,:]
     s0_ordered = np.array(s)[0,:,:]
     w_ordered_All.append(w0_ordered)
@@ -1220,17 +1220,17 @@ def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
     for j in range (1, num_ica_runs):
         # Finding correlation from Source matrix
         w1 = np.array(w)[j,:,:]
-        s1 = np.array(s)[j,:,:]        
+        s1 = np.array(s)[j,:,:]
         data_file_save = "Correlation_Graph_"  + XY + "_s0_s" + str(j) + ".jpeg"
-        coef_s0_sj = dpica_report.pica_2d_correlate7(s0_ordered, s1, data_path_save, data_file_save, True, False, True)    
+        coef_s0_sj = dpica_report.pica_2d_correlate7(s0_ordered, s1, data_path_save, data_file_save, True, False, True)
         coef_All.append(coef_s0_sj)
 
         # Finding numximum pair index from Source matrix
-        max_index_row = find_argmax_v2(coef_s0_sj, 1) 
+        max_index_row = find_argmax_v2(coef_s0_sj, 1)
         w1_ordered = w1[max_index_row,:]        # Rearrange w1 in max_index_row(w0) order.
         s1_ordered = s1[max_index_row,:]        # Rearrange s1 in max_index_row(w0) order.
         data_file_save = "Correlation_Graph_"  + XY + "_s0_s" + str(j) + "_ordered.jpeg"
-        coef_s0_sj_ordered = dpica_report.pica_2d_correlate7(s0_ordered, s1_ordered, data_path_save, data_file_save, True, False, True)     
+        coef_s0_sj_ordered = dpica_report.pica_2d_correlate7(s0_ordered, s1_ordered, data_path_save, data_file_save, True, False, True)
         w_ordered_All.append(w1_ordered)
         s_ordered_All.append(s1_ordered)
         coef_s0_sj_ordered_All.append(coef_s0_sj_ordered)
@@ -1250,8 +1250,8 @@ def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
         ## Switch current row to opposite sign
         for j in range (1, num_ica_runs):
             coef_s0_sj_ordered = np.array(coef_s0_sj_ordered_All)[j-1,:,:]
-            w_ordered = np.array(w_ordered_All)[j,:,:]  
-            if coef_s0_sj_ordered[i,i] < 0 : 
+            w_ordered = np.array(w_ordered_All)[j,:,:]
+            if coef_s0_sj_ordered[i,i] < 0 :
                 w_ordered[i] = -1 * w_ordered[i]
                 printme = printme + "[LOG][Multirun ICA] Re-arranging - Component " + \
                           str(i) + "of w" + str(j) + "_[" + str(i) + "] is applied -1 as coef_s0_s" + \
@@ -1265,8 +1265,8 @@ def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
 
     # Save each Weight Correlation matrix
     for j in range (1, num_ica_runs):
-        w_ordered = np.array(w_ordered_All)[j,:,:]  
-        data_file_save =  "Correlation_Graph_"  + XY + "_w0_w" + str(j) + "_ordered_flipped.jpeg"   
+        w_ordered = np.array(w_ordered_All)[j,:,:]
+        data_file_save =  "Correlation_Graph_"  + XY + "_w0_w" + str(j) + "_ordered_flipped.jpeg"
         coef_w0_wj_ordered = dpica_report.pica_2d_correlate7(w0_ordered, w_ordered, data_path_save, data_file_save, True, False, True)
 
     # End or for j loop.
@@ -1283,24 +1283,24 @@ def pica_infomax_run_average5(self, XY, num_ica_runs, GlobalPCA_U,  w, s):
 
     w_ordered_All = np.array(w_ordered_All)
 
-    # Compute GlobalA 
+    # Compute GlobalA
     GlobalW_unmixer = np.average(w_ordered_All, axis=0)
     printme = printme + "[LOG][Multirun ICA] Average algorithm - Done" + "\n"
 
     # Compute GlobalA_mixer and S_source
-    GlobalA_mixer = inv(GlobalW_unmixer)     
+    GlobalA_mixer = inv(GlobalW_unmixer)
     S_sources = np.dot(GlobalW_unmixer, GlobalPCA_U)
 
     self.cache['logs'].append(printme + "\n")
 
     return (GlobalA_mixer, S_sources, GlobalW_unmixer)
 
-def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):   
+def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
     """Computes ICASSO ICA with find_argmax function
     *Input
         w : Globa W unmixer matrix from Infomax (r x r) or (components x components)
         s : Source matrix from Infomax (r x d) or (components x variable voxel)
-        num_ica_runs : Number of times to run ica    
+        num_ica_runs : Number of times to run ica
         XY  : Modality X or Y
     *Output
         A : GlobalA_mixer_X : mixing matrix
@@ -1335,17 +1335,17 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
     for j in range (1, num_ica_runs):
         # Finding correlation from Source matrix
         w1 = np.array(w)[j,:,:]
-        s1 = np.array(s)[j,:,:]        
-        data_file_save =  "Correlation_Graph_"  + XY + "_s0_s" + str(j) + ".jpeg"    
-        coef_s0_sj = dpica_report.pica_2d_correlate7(s0_ordered, s1, data_path_save, data_file_save, True, False, True)    
+        s1 = np.array(s)[j,:,:]
+        data_file_save =  "Correlation_Graph_"  + XY + "_s0_s" + str(j) + ".jpeg"
+        coef_s0_sj = dpica_report.pica_2d_correlate7(s0_ordered, s1, data_path_save, data_file_save, True, False, True)
         coef_All.append(coef_s0_sj)
 
         # Finding numximum pair index from Source matrix
-        max_index_row = find_argmax_v2(coef_s0_sj, 1) 
+        max_index_row = find_argmax_v2(coef_s0_sj, 1)
         w1_ordered = w1[max_index_row,:]        # Rearrange w1 in max_index_row(w0) order.
         s1_ordered = s1[max_index_row,:]        # Rearrange s1 in max_index_row(w0) order.
-        data_file_save =  "Correlation_Graph_"  + XY + "_s0_s" + str(j) + "_ordered.jpeg"     
-        coef_s0_sj_ordered = dpica_report.pica_2d_correlate7(s0_ordered, s1_ordered, data_path_save, data_file_save, True, False, True)     
+        data_file_save =  "Correlation_Graph_"  + XY + "_s0_s" + str(j) + "_ordered.jpeg"
+        coef_s0_sj_ordered = dpica_report.pica_2d_correlate7(s0_ordered, s1_ordered, data_path_save, data_file_save, True, False, True)
         w_ordered_All.append(w1_ordered)
         s_ordered_All.append(s1_ordered)
         coef_s0_sj_ordered_All.append(coef_s0_sj_ordered)
@@ -1368,8 +1368,8 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
         ## Switch current row to opposite sign
         for j in range (1, num_ica_runs):
             coef_s0_sj_ordered = np.array(coef_s0_sj_ordered_All)[j-1,:,:]
-            w_ordered = np.array(w_ordered_All)[j,:,:]  
-            if coef_s0_sj_ordered[i,i] < 0 : 
+            w_ordered = np.array(w_ordered_All)[j,:,:]
+            if coef_s0_sj_ordered[i,i] < 0 :
                 w_ordered[i] = -1 * w_ordered[i]
                 printme = printme + "[LOG][Multirun ICA] Re-arranging - Component " + \
                           str(i) + "of w" + str(j) + "_[" + str(i) + "] is applied -1 as coef_s0_s" + \
@@ -1380,8 +1380,8 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
 
     # Save each Weight Correlation matrix
     for j in range (1, num_ica_runs):
-        w_ordered = np.array(w_ordered_All)[j,:,:]  
-        data_file_save =  "Correlation_Graph_"  + XY + "_w0_w" + str(j) + "_ordered_flipped.jpeg"   
+        w_ordered = np.array(w_ordered_All)[j,:,:]
+        data_file_save =  "Correlation_Graph_"  + XY + "_w0_w" + str(j) + "_ordered_flipped.jpeg"
         coef_w0_wj_ordered = dpica_report.pica_2d_correlate7(w0_ordered, w_ordered, data_path_save, data_file_save, True, False, True)
     # End or for j loop.
 
@@ -1398,21 +1398,21 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
     list_m = []
 
 
-    for i in range(NCOMP) :        
+    for i in range(NCOMP) :
         coef_max_sum_list = []
         coef_max_sum = -9999
         printme = printme + "[LOG][Multirun ICA] Centrotype - Component " + \
                   str(i) + "========================" + "\n"
 
-        for j in range(num_ica_runs) : 
-            for k in range(num_ica_runs) : 
+        for j in range(num_ica_runs) :
+            for k in range(num_ica_runs) :
                 if j != k and j < k:
-                    w_j_ordered = np.array(w_ordered_All)[j,:,:]  
-                    w_k_ordered = np.array(w_ordered_All)[k,:,:]  
+                    w_j_ordered = np.array(w_ordered_All)[j,:,:]
+                    w_k_ordered = np.array(w_ordered_All)[k,:,:]
 
-                    data_file_save =  "Correlation_Graph_"  + XY + "_ICASSO_component_" + str(i) + "_w" + str(j) + "_w" + str(k) + ".jpeg"   
-                    coef_component = dpica_report.pica_2d_correlate6(w_j_ordered[i], w_k_ordered[i], data_path_save, data_file_save, False, False, True)           
-                    coef_component_wj_wk = np.corrcoef ( w_j_ordered[i], w_k_ordered[i])        
+                    data_file_save =  "Correlation_Graph_"  + XY + "_ICASSO_component_" + str(i) + "_w" + str(j) + "_w" + str(k) + ".jpeg"
+                    coef_component = dpica_report.pica_2d_correlate6(w_j_ordered[i], w_k_ordered[i], data_path_save, data_file_save, False, False, True)
+                    coef_component_wj_wk = np.corrcoef ( w_j_ordered[i], w_k_ordered[i])
                     coef_component_wj_wk_sum = np.sum(coef_component_wj_wk[0,1])
                     printme = printme + "[LOG][Multirun ICA] Centrotype - Component " + \
                             str(i) + " coef_component_w" + str(j) + "_w" + str(k) + "_sum = " + \
@@ -1437,14 +1437,14 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
     # End or for loop.
 
 
-    # Compute GlobalA 
+    # Compute GlobalA
     GlobalW_unmixer = np.array(list_m)
 
     printme = printme + "[LOG][Multirun ICA] Centrotype algorithm - Done" + "\n"
 
     # Compute GlobalA_mixer and S_source
-    GlobalA_mixer = inv(GlobalW_unmixer)     
-    S_sources = np.dot(GlobalW_unmixer, GlobalPCA_U)       
+    GlobalA_mixer = inv(GlobalW_unmixer)
+    S_sources = np.dot(GlobalW_unmixer, GlobalPCA_U)
 
     self.cache['logs'].append(printme + "\n")
 
@@ -1452,7 +1452,7 @@ def pica_infomax_run_icasso6(self, XY,  num_ica_runs, GlobalPCA_U,  w, s):
 
 def findsteplength1(fk, deltafk, x1, x2, alphak, P, c1, c2):
 
-    # Initialization    
+    # Initialization
     con = 1
     coml = len(x1)
 
@@ -1476,14 +1476,14 @@ def findsteplength1(fk, deltafk, x1, x2, alphak, P, c1, c2):
                 alphak = 0.9 * abs(firstterm1/firstterm2)
             else:
                 alphak = 0.1 * alphak
-            
+
             if alphak < 1e-6 :
                 alphak = 0
                 con = 0
-            else:  
+            else:
                 con = con + 1
-        
-            
+
+
         elif (secondterm1 < 0) and (secondterm1 < c2*secondterm2):
             con = con + 1
             alphak = 1.1*alphak
@@ -1493,7 +1493,7 @@ def findsteplength1(fk, deltafk, x1, x2, alphak, P, c1, c2):
         else:
             con = 0
 
-        # End of if 
+        # End of if
     # End of While
 
     if (con >= 50 ):
@@ -1502,7 +1502,7 @@ def findsteplength1(fk, deltafk, x1, x2, alphak, P, c1, c2):
 
     return alphak
 
-def pica_infomax7(self):    
+def pica_infomax7(self):
 
     """Computes ICA infomax in whitened data
     Decomposes x_white as x_white=AS
@@ -1544,7 +1544,7 @@ def pica_infomax7(self):
 
     data2 = copy.copy(self.GlobalPCA_U_Y)
     STEP_Y = 0
-    STOPSIGN_Y = 0        
+    STOPSIGN_Y = 0
 
     self.Global_NCOM_Y = self.GlobalPCA_U_Y.shape[0]        # Global_NCOM
     self.old_weight_Y = np.eye(self.Global_NCOM_Y)
@@ -1602,8 +1602,8 @@ def pica_infomax7(self):
     hiHz = 1                # fprintf('runica(): specgram hiHz must be >=loHz and <= srate/2')
     Hzinc = 1               # fprintf('runica(): specgram Hzinc must be >0 and <= hiHz-loHz')
     Hzframes = self.GlobalPCA_U_X.shape[1] / 2 # fprintf('runica(): specgram frames must be >=0 and <= data length')
-    
- 
+
+
     extended = 0 #1 #0            # % turn on extended-ICA
     extblocks = DEFAULT_EXTBLOCKS           # % number of blocks per kurt() compute
 
@@ -1633,7 +1633,7 @@ def pica_infomax7(self):
 
     if not extended :
         annealstep = DEFAULT_ANNEALSTEP     # 0.90;DEFAULT_ANNEALSTEP   = 0.90
-    else:    
+    else:
         annealstep = DEFAULT_EXTANNEAL      # 0.98;DEFAULT_EXTANNEAL    = 0.98
 
 
@@ -1669,12 +1669,12 @@ def pica_infomax7(self):
             %(chans_X, frames_X,chans_X, frames_X) + "\n"
         printme = printme + " Input data Y size [%d,%d] = %d channels, %d frames." \
             %(chans_Y, frames_Y,chans_Y, frames_Y) + "\n"
-        
+
         if pcaflag == 'on' :
             printme = printme + " After PCA dimension reduction,  finding " + "\n"
         else:
             printme = printme + " Finding " + "\n"
-        
+
         if ~extended :
             printme = printme + " %d ICA components using logistic ICA." %(ncomps) + "\n"
         else : #% if extended
@@ -1728,21 +1728,21 @@ def pica_infomax7(self):
     # end of if srate > 0
     # %
     # %%%%%%%%%%%%%%%%%%% Perform sphering %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    # %        
+    # %
 
 
     if sphering == 'on' :
         if verbose :
             printme = printme + "Computing the sphering matrix..." + "\n"
-        sphere_X_1 = np.cov(data1.T,rowvar=False )     
-        sphere_X_2 = (sqrtm( sphere_X_1   ))     
-        sphere_X_3 = inv(sphere_X_2)     
-        sphere_X = 2.0*sphere_X_3    
+        sphere_X_1 = np.cov(data1.T,rowvar=False )
+        sphere_X_2 = (sqrtm( sphere_X_1   ))
+        sphere_X_3 = inv(sphere_X_2)
+        sphere_X = 2.0*sphere_X_3
 
 
-        sphere_Y_1 = np.cov(data2.T,rowvar=False )     
-        sphere_Y_2 = (sqrtm( sphere_Y_1   ))     
-        sphere_Y_3 = inv(sphere_Y_2)     
+        sphere_Y_1 = np.cov(data2.T,rowvar=False )
+        sphere_Y_2 = (sqrtm( sphere_Y_1   ))
+        sphere_Y_3 = inv(sphere_Y_2)
         sphere_Y = 2.0*sphere_Y_3
 
         if not weights :
@@ -1757,11 +1757,11 @@ def pica_infomax7(self):
         else  :  #% weights given on commandline
             if verbose :
                 printme = printme + " Using starting weights named on commandline ..." + "\n"
-            
+
         # end of if not weights :
         if verbose :
             printme = printme + " Sphering the data ..." + "\n"
-                    
+
         data1 = copy.copy(np.dot(sphere_X,data1))     # % actually decorrelate the electrode signals
         data2 = copy.copy(np.dot(sphere_Y,data2))     # % actually decorrelate the electrode signals
     elif sphering == 'off' : # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1778,19 +1778,19 @@ def pica_infomax7(self):
             sphere_Y = 2.0*np.inv(sqrtm(np.cov(data2.T,rowvar=False)))  # % find the "sphering" matrix = spher()
             weight_Y = np.eye(self.Global_NCOM_Y,chans_Y) * sphere_Y # % begin with the identity matrix
             sphere_Y = np.eye(chans_Y)               #   % return the identity matrix
-            
+
         else : # % weights ~= 0
             if verbose :
                 printme = printme + " Using starting weights named on commandline ..." + "\n"
                 printme = printme + " Returning the identity matrix in variable sphere ..." + "\n"
-            
+
             sphere_X = np.eye(chans_X)             #  % return the identity matrix
             sphere_Y = np.eye(chans_Y)             #  % return the identity matrix
         # end not weights :
     elif sphering == 'none':
         sphere_X = np.eye(chans_X)             #  % return the identity matrix
         sphere_Y = np.eye(chans_Y)             #  % return the identity matrix
-        if not weights  : 
+        if not weights  :
             if verbose :
                 printme = printme + " Starting weights are the identity matrix ..." + "\n"
                 printme = printme + " Returning the identity matrix in variable sphere ..." + "\n"
@@ -1800,16 +1800,16 @@ def pica_infomax7(self):
             weight_Y = np.eye(self.Global_NCOM_Y, chans_Y) #% begin with the identity matrix
 
         else : # % weights ~= 0
-            if verbose : 
+            if verbose :
                 printme = printme + " Using starting weights named on commandline ..." + "\n"
                 printme = printme + " Returning the identity matrix in variable sphere ..." + "\n"
             # end of if verbose :
         # end not weights :
         sphere_X = np.eye(chans_X,chans_X)              #  % return the identity matrix
-        sphere_Y = np.eye(chans_Y,chans_Y)              #  % return the identity matrix            
+        sphere_Y = np.eye(chans_Y,chans_Y)              #  % return the identity matrix
         if verbose :
             printme = printme + "Returned variable sphere will be the identity matrix." + "\n"
-        # end of if verbose 
+        # end of if verbose
     #end sphering == 'on' :
 
 
@@ -1819,14 +1819,14 @@ def pica_infomax7(self):
     # %
 
 
-    # 
+    #
     lastt_X = np.fix((datalength_X/block[0]-1)*block[0]+1)
     lastt_Y = np.fix((datalength_Y/block[1]-1)*block[1]+1)
     degconst = 180/np.pi
 
 
     BI_X = block[0] * np.eye(self.Global_NCOM_X,self.Global_NCOM_X)
-    BI_Y = block[1] * np.eye(self.Global_NCOM_Y,self.Global_NCOM_Y) 
+    BI_Y = block[1] * np.eye(self.Global_NCOM_Y,self.Global_NCOM_Y)
     delta_X = np.zeros((1,chans_X * chans_X))
     delta_Y = np.zeros((1,chans_Y * chans_Y))
     change_X = 1
@@ -1841,8 +1841,8 @@ def pica_infomax7(self):
     oldweight_Y = copy.copy(startweight_Y)
 
     prevwtchange_X = np.zeros((chans_X,self.Global_NCOM_X))
-    prevwtchange_Y = np.zeros((chans_Y,self.Global_NCOM_Y))      
-    oldwtchange_X = np.zeros((chans_X,self.Global_NCOM_X))       
+    prevwtchange_Y = np.zeros((chans_Y,self.Global_NCOM_Y))
+    oldwtchange_X = np.zeros((chans_X,self.Global_NCOM_X))
     oldwtchange_Y = np.zeros((chans_Y,self.Global_NCOM_Y))
 
     lrates_X = np.zeros((1,maxsteps))
@@ -1853,11 +1853,11 @@ def pica_infomax7(self):
     signs_X = np.ones((1,self.Global_NCOM_X)) #    % initialize signs to nsub -1, rest +1
     signs_Y = np.ones((1,self.Global_NCOM_Y)) #    % initialize signs to nsub -1, rest +1
 
-    for k in range(1,nsub) : 
+    for k in range(1,nsub) :
         signs_X[k] = -1
         signs_Y[k] = -1
     # end for
-    
+
     if extended and extblocks < 0 and verbose :
         printme = printme + "Fixed extended-ICA sign assignments:  " + "\n"
 
@@ -1910,8 +1910,8 @@ def pica_infomax7(self):
     lossf_X = np.zeros(maxsteps+1)
     lossf_Y = np.zeros(maxsteps+1)
 
-    angledelta_X = 0        
-    angledelta_Y = 0        
+    angledelta_X = 0
+    angledelta_Y = 0
 
     entropy_X = 0
     entropy_Y = 0
@@ -1919,7 +1919,7 @@ def pica_infomax7(self):
     entropychange_X = 0
     entropychange_Y = 0
 
-    # Entropy   
+    # Entropy
     Loop_num = 1
     Loop_list = []
     Loop_list_X = []
@@ -1967,7 +1967,7 @@ def pica_infomax7(self):
 
             entropy_X = np.mean(temp)
 
-            entropy_list_X.append([Loop_num,entropy_X])        
+            entropy_list_X.append([Loop_num,entropy_X])
             myentropy_X = copy.copy(entropy_X)
 
 
@@ -1980,14 +1980,14 @@ def pica_infomax7(self):
             # %---------------------------
             # % if weight is not  blowup, update
             if not wts_blowup_X :
-                
+
                 oldwtchange_X  = copy.copy(weight_X - oldweight_X)
                 STEP_X = copy.copy(STEP_X + 1)
                 lrates_X[0,STEP_X] = copy.copy(lrate_X)
-                angledelta_X = 0 
-                delta_X = copy.copy(oldwtchange_X.reshape(1 , chans_X* self.Global_NCOM_X ,order='F'))                
+                angledelta_X = 0
+                delta_X = copy.copy(oldwtchange_X.reshape(1 , chans_X* self.Global_NCOM_X ,order='F'))
                 change_X = copy.copy(np.dot(delta_X,delta_X.T))
-                
+
             # end if not wts_blowup_X
             #%DATA1 blow up restart-------------------------------
             if wts_blowup_X or np.isnan(change_X) or np.isinf(change_X) : #  % if weights blow up,
@@ -2000,7 +2000,7 @@ def pica_infomax7(self):
                 lrate_X = copy.copy(lrate_X * DEFAULT_RESTART_FAC) #% with lower learning rate
                 weight_X  = copy.copy(startweight_X)  #            % and original weight matrix
                 oldweight_X  = copy.copy(startweight_X)
-                oldwtchange_X = np.zeros((chans_X,self.Global_NCOM_X))  
+                oldwtchange_X = np.zeros((chans_X,self.Global_NCOM_X))
                 delta_X = np.zeros((1,chans_X * chans_X))
                 olddelta_X = copy.copy(delta_X)
                 extblocks = copy.copy(urextblocks)
@@ -2009,12 +2009,12 @@ def pica_infomax7(self):
                 bias_X = copy.copy(np.zeros((self.Global_NCOM_X, 1)))
                 lrates_X = copy.copy(np.zeros((1,maxsteps)))
 
-                # Entropy                    
+                # Entropy
                 entropychange_list_X.append([Loop_num,2.0])
 
-                if extended : 
+                if extended :
                     signs_X = copy.copy(np.ones((1,self.Global_NCOM_X)))  #% initialize signs to nsub -1, rest +1
-            
+
                     for k in range(1,nsub) :
                         signs_X[k] = -1
                     # end for
@@ -2026,31 +2026,31 @@ def pica_infomax7(self):
                     if r < self.Global_NCOM_X :
                         printme = printme + "Data has rank %d. Cannot compute %d components."%( r,self.Global_NCOM_X) + "\n"
                         return
-                    else : 
+                    else :
                         printme = printme + "Lowering learning rate to %g and starting again." %(lrate_X) + "\n"
                     #end if
                 else :
                     printme = printme + "XXXXX runica(): QUITTING - weight matrix may not be invertible! XXXXXX" + "\n"
                     return
-                #end if 
+                #end if
             else  : #% if DATA1 weights in bounds
                 # %testing the trend of entropy term, avoiding the overfitting of correlation
 
                 u = copy.copy(np.dot(weight_X , data1 [:, :]) + bias_X * np.ones((1,frames_X)))
-                y = copy.copy(1/(1 + np.exp(-u)))              
+                y = copy.copy(1/(1 + np.exp(-u)))
                 temp = copy.copy(np.log(abs( (np.dot(weight_X,y) * (1-y) ) + eps)))
                 lossf_X[STEP_X] = copy.copy(np.mean(temp) )
-                
+
                 #%changes of entropy term added by jingyu
                 if STEP_X > 1 :
                     entropychange_X = lossf_X[STEP_X] - entropy_X
                 else :
                     entropychange_X = 1
-                # Entropy                    
-                entropychange_list_X.append([Loop_num,entropychange_X])               
+                # Entropy
+                entropychange_list_X.append([Loop_num,entropychange_X])
                 #end
                 #%--------
-                
+
                 if STEP_X > 5 :
                     a = 1 + 1
                     index_X = copy.copy(ica_fuse_falsemaxdetect(self, lossf_X,trendPara))
@@ -2085,7 +2085,7 @@ def pica_infomax7(self):
                         printme = printme + "Dataset X step %d - lrate %5f, wchange %7.6f, %d subgauss" \
                             %( STEP_X, lrate_X, change_X, (self.Global_NCOM_X - sum(np.diag(signs_X)))/2) + "\n"
                     #end % step > 2
-        
+
                 # %%%%%%%%%%%%%%%%%%%% Anneal learning rate %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 # %
                 if entropychange_X < 0  : #%| degconst*angledelta(1) > annealdeg,
@@ -2096,9 +2096,9 @@ def pica_infomax7(self):
                     olddelta_X   = copy.copy(delta_X) #                % initialize
                     oldchange_X  = copy.copy(change_X)
                 # end
-                
+
                 #%%%%%%%%%%%%%%%%%%%% Apply stopping rule %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                # Apply stopping rule               
+                # Apply stopping rule
                 if STEP_X  > 2 and change_X < nochange:    # apply stopping rule
                     STOPSIGN_X  = 1                    # stop when weights stabilize
                     printme = printme + "STOPSIGN_X = True"+ "\n"
@@ -2118,11 +2118,11 @@ def pica_infomax7(self):
         # Entropy
         STEP_list_X.append([Loop_num,STEP_X])
         STOPSIGN_list_X.append([Loop_num,STOPSIGN_X])
-        Crate_list_X.append([Loop_num,Crate_X])       
+        Crate_list_X.append([Loop_num,Crate_X])
 
 
         if not STOPSIGN_Y :
-            # Global ICA - Find Global A (aka find Global W) using Infomax         
+            # Global ICA - Find Global A (aka find Global W) using Infomax
             # print('[LOG][Flow_5_Global_ICA]=====Modality_Y : Find Global A (aka find Global W) using Infomax =====')
 
             eps = np.finfo(np.float32).eps
@@ -2135,8 +2135,8 @@ def pica_infomax7(self):
             temp = copy.copy(np.log( abs( temp2 ) + eps))      # MatLab : size=8x58179 Pyton : size=8x58179
 
             entropy_Y = np.mean(temp)       # MatLab : -2.105741089518763Pyton : -2.1057364012057698
-            # Entropy            
-            entropy_list_Y.append([Loop_num,entropy_Y]) 
+            # Entropy
+            entropy_list_Y.append([Loop_num,entropy_Y])
             myentropy_Y = copy.copy(entropy_Y)
 
 
@@ -2150,14 +2150,14 @@ def pica_infomax7(self):
             # %---------------------------
             # % if weight is not  blowup, update
             if not wts_blowup_Y :
-                
+
                 oldwtchange_Y  = copy.copy (weight_Y - oldweight_Y)
                 STEP_Y = STEP_Y + 1
                 lrates_Y[0,STEP_Y] = copy.copy (lrate_Y)
-                angledelta_Y = 0 
+                angledelta_Y = 0
                 delta_Y = copy.copy(oldwtchange_Y.reshape(1 , chans_Y* self.Global_NCOM_Y ,order='F'))
                 change_Y = copy.copy(np.dot(delta_Y,delta_Y.T))
-                
+
             # end if not wts_blowup_Y
             #%DATA1 blow up restart-------------------------------
             if wts_blowup_Y or np.isnan(change_Y) or np.isinf(change_Y) : #  % if weights blow up,
@@ -2170,7 +2170,7 @@ def pica_infomax7(self):
                 lrate_Y = copy.copy (lrate_Y * DEFAULT_RESTART_FAC) #% with lower learning rate
                 weight_Y  = copy.copy (startweight_Y)  #            % and original weight matrix
                 oldweight_Y  = copy.copy (startweight_Y)
-                oldwtchange_Y = np.zeros((chans_Y,self.Global_NCOM_Y))  
+                oldwtchange_Y = np.zeros((chans_Y,self.Global_NCOM_Y))
                 delta_Y = np.zeros((1,chans_Y * chans_Y))
                 olddelta_Y = copy.copy (delta_Y)
                 extblocks = copy.copy (urextblocks)
@@ -2179,12 +2179,12 @@ def pica_infomax7(self):
                 bias_Y = np.zeros((self.Global_NCOM_Y, 1))
                 lrates_Y = np.zeros((1,maxsteps))
 
-                # Entropy                    
+                # Entropy
                 entropychange_list_Y.append([Loop_num,2.0])
 
-                if extended : 
+                if extended :
                     signs_Y = copy.copy(np.ones((1,self.Global_NCOM_Y)))  #% initialize signs to nsub -1, rest +1
-            
+
                     for k in range(1,nsub) :
                         signs_Y[k] = -1
                     # end for
@@ -2192,7 +2192,7 @@ def pica_infomax7(self):
                     oldsigns_Y = np.zeros(signs_Y.size)
                 # end if extended
                 if lrate_Y > MIN_LRATE :
-                    r =  matrix_rank(data2) 
+                    r =  matrix_rank(data2)
                     if r < self.Global_NCOM_Y :
                         printme = printme + "Data has rank %d. Cannot compute %d components." %( r,self.Global_NCOM_Y) + "\n"
                         return
@@ -2202,7 +2202,7 @@ def pica_infomax7(self):
                 else :
                     printme = printme + "XXXXX runica(): QUITTING - weight matrix may not be invertible! XXXXXX" + "\n"
                     return
-                #end if 
+                #end if
             else  : #% if DATA1 weights in bounds
                 # %testing the trend of entropy term, avoiding the overfitting of correlation
 
@@ -2210,17 +2210,17 @@ def pica_infomax7(self):
                 y = copy.copy(1/(1 + np.exp(-u)))
                 temp = copy.copy(np.log(abs( (np.dot(weight_Y,y) * (1-y) ) + eps)))
                 lossf_Y[STEP_Y] = copy.copy(np.mean(temp) )     # MATLAB -2.05926744085665  PYTHON = -2.0592651746
-                
+
                 #%changes of entropy term added by jingyu
                 if STEP_Y > 1 :
                     entropychange_Y = copy.copy(lossf_Y[STEP_Y] - entropy_Y)
                 else :
                     entropychange_Y = 1
-                # Entropy                    
-                entropychange_list_Y.append([Loop_num,entropychange_Y])               
+                # Entropy
+                entropychange_list_Y.append([Loop_num,entropychange_Y])
                 #end
                 #%--------
-                
+
                 if STEP_Y > 5 :
                     index_Y = copy.copy(ica_fuse_falsemaxdetect(self, lossf_Y,trendPara)) # Test Entropy deciding to reduce Change_rate
                     if index_Y :
@@ -2257,7 +2257,7 @@ def pica_infomax7(self):
                         printme = printme + "Dataset Y step %d - lrate %7.6f, wchange %7.6f, %d subgauss" \
                             %( STEP_Y, lrate_Y, change_Y, (self.Global_NCOM_Y - sum(np.diag(signs_Y)))/2) + "\n"
                     #end % step > 2
-        
+
                 # %%%%%%%%%%%%%%%%%%%% Anneal learning rate %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 # %
                 if entropychange_Y < 0  : #%| degconst*angledelta(1) > annealdeg,
@@ -2268,9 +2268,9 @@ def pica_infomax7(self):
                     olddelta_Y   = copy.copy (delta_Y) #                % initialize
                     oldchange_Y  = copy.copy (change_Y)
                 # end
-                
+
                 #%%%%%%%%%%%%%%%%%%%% Apply stopping rule %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                # Apply stopping rule               
+                # Apply stopping rule
                 if STEP_Y  > 2 and change_Y < nochange:    # apply stopping rule
                     STOPSIGN_Y  = 1                    # stop when weights stabilize
                     printme = printme + "STOPSIGN_Y = True" + "\n"
@@ -2285,30 +2285,30 @@ def pica_infomax7(self):
 
 
             #end% end if weights in bounds
-        # end if ~stopsign(2) 
+        # end if ~stopsign(2)
         # Entropy
         STEP_list_Y.append([Loop_num,STEP_Y])
         STOPSIGN_list_Y.append([Loop_num,STOPSIGN_Y])
-        Crate_list_Y.append([Loop_num,Crate_Y])       
+        Crate_list_Y.append([Loop_num,Crate_Y])
 
 
         GlobalW_unmixer_X =  (weight_X)
         GlobalA_mixer_X  =  (inv(GlobalW_unmixer_X))
         GlobalW_unmixer_Y =  (weight_Y)
         GlobalA_mixer_Y  = (inv(GlobalW_unmixer_Y)   )
-  
+
 
         # ('[LOG][Flow_5_Global_ICA]=====End=====')
         # ('[LOG][Flow_5_Global_ICA]===== Check_I_X=====')
 
-        
+
 
         #
         # Parrelle ICA - Correlation A
         #
         # ('[LOG][Flow_7_Parallel_ICA-Correlation_A]=====Start=====')
 
-        # Parallel ICA - Find Correlation local A       
+        # Parallel ICA - Find Correlation local A
 
         # ('[LOG][Flow_7_Parallel_ICA-Correlation_A]=====Modality_X and _Y : Find Correlation A====='
 
@@ -2322,15 +2322,15 @@ def pica_infomax7(self):
         if (STEP_X >2 and STEP_Y > 2) and ( not STOPSIGN_X or not STOPSIGN_Y ) :
 
             #
-            # print('[LOG][Flow_6_Parallel_ICA-Local_reconstruction]=====Start=====')   
+            # print('[LOG][Flow_6_Parallel_ICA-Local_reconstruction]=====Start=====')
 
-            # Parallel ICA - Find local A using GlobalPCA_dewhite_X and Con_deWhite_X    
-            # Called Local-reconstruction from-Global-to-Local     
+            # Parallel ICA - Find local A using GlobalPCA_dewhite_X and Con_deWhite_X
+            # Called Local-reconstruction from-Global-to-Local
 
             LocalA_All_X = (local_reconstruction8(self, GlobalW_unmixer_X, GlobalA_mixer_X, \
                 self.GlobalPCA_dewhite_X, self.Con_deWhite_X, self.NSUB_All_X, self.NCOM_All_X, self.SITE_NUM, B_GLOBAL, False))
 
- 
+
             LocalA_All_Y = (local_reconstruction8(self, GlobalW_unmixer_Y, GlobalA_mixer_Y, \
                 self.GlobalPCA_dewhite_Y, self.Con_deWhite_Y, self.NSUB_All_Y, self.NCOM_All_Y, self.SITE_NUM, B_GLOBAL, False))
 
@@ -2341,7 +2341,7 @@ def pica_infomax7(self):
 
             # ('[LOG][Flow_7_Parallel_ICA-Correlation_A]=====Start=====')
 
-            # Parallel ICA - Find Correlation local A       
+            # Parallel ICA - Find Correlation local A
 
             # ('[LOG][Flow_7_Parallel_ICA-Correlation_A]=====Modality_X and _Y : Find Correlation A=====')
 
@@ -2371,9 +2371,9 @@ def pica_infomax7(self):
 
             if not (np.size(ix)==0) :  # ~isempty(ix) :
                 if (np.size(ix)) > MaxComCon :
-                    ix = copy.copy(np.resize(ix,(1,MaxComCon)) )                               
+                    ix = copy.copy(np.resize(ix,(1,MaxComCon)) )
 
-                # If not empty, do here      
+                # If not empty, do here
                 a =[]
                 a_X = []
                 a_Y = []
@@ -2390,7 +2390,7 @@ def pica_infomax7(self):
                     u_X = copy.copy(u)
                     u_Y = copy.copy(u)
 
-                    b1 = copy.copy(np.cov(a,u))  
+                    b1 = copy.copy(np.cov(a,u))
                     b = b1[0,1]
 
                     tmcorr = copy.copy(b/np.std(a, ddof=1) / np.std(u, ddof=1))
@@ -2398,25 +2398,25 @@ def pica_infomax7(self):
                     comterm = copy.copy(2*b/np.var(a,ddof=1)/np.var(u,ddof=1))
 
                     coml = len(a)
-                    
+
                     if not STOPSIGN_X : # %& ~Overindex1
                         deltaf_X = copy.copy(comterm * ( u_X - np.mean(u_X) + (b * (np.mean(a_X)-a_X)  /  (np.var(a_X,ddof=1)) ) ))
                         P_X = copy.copy(deltaf_X / np.linalg.norm(deltaf_X))
                         alphak_X = copy.copy(findsteplength1 (-tmcorr**2, -deltaf_X, a_X, u_X, alphak_X, P_X, 0.0001, 0.999))
                         aweights_X = copy.copy(Crate_X * alphak_X * P_X)
                         mx[:,int(maxcol[Cons_com])] = copy.copy (mx[:, int(maxcol[Cons_com])] + aweights_X)
-                    # end if not STOPSIGN_X 
+                    # end if not STOPSIGN_X
 
-                    if not STOPSIGN_Y : # not Overindex1 
+                    if not STOPSIGN_Y : # not Overindex1
                         deltaf_Y = copy.copy((comterm * (a_Y - np.mean(a_Y) + b/np.var(u,ddof=1)*(np.mean(u_Y) - u_Y))))
                         P_Y = copy.copy(deltaf_Y / np.linalg.norm(deltaf_Y))
                         alphak_Y = copy.copy(findsteplength1 (-tmcorr**2, -deltaf_Y, u_Y, a_Y, alphak_Y, P_Y, 0.0001, 0.999))
                         aweights_Y = copy.copy(Crate_Y * alphak_Y * P_Y)
                         sx[:,int(maxrow[Cons_com])] = copy.copy (sx[:,int(maxrow[Cons_com])] + aweights_Y)
-                    # end if not STOPSIGN_Y     
+                    # end if not STOPSIGN_Y
 
 
-                # end for Cons_com 
+                # end for Cons_com
 
                 #
                 # Parrelle ICA - Global reconstruction
@@ -2426,8 +2426,8 @@ def pica_infomax7(self):
                 if not STOPSIGN_X :
                     temp = copy.copy (weight_X )
 
-                    # Parallel ICA - Find Global A (Flow#5) using Con_White_X and GlobalPCA_White_X 
-                    # Called Global-reconstruction from-Local-to-Global     
+                    # Parallel ICA - Find Global A (Flow#5) using Con_White_X and GlobalPCA_White_X
+                    # Called Global-reconstruction from-Local-to-Global
                     # ('[LOG][Flow_8_Parallel_ICA-Global_reconstruction]=====Modality_X : Find Global A (Flow#5) using Con_White_X and GlobalPCA_White_X====')
 
 
@@ -2458,8 +2458,8 @@ def pica_infomax7(self):
                 if not STOPSIGN_Y :
                     temp = copy.copy(weight_Y )
 
-                    # Parallel ICA - Find Global A (Flow#5) using Con_White_X and GlobalPCA_White_X 
-                    # Called Global-reconstruction from-Local-to-Global  
+                    # Parallel ICA - Find Global A (Flow#5) using Con_White_X and GlobalPCA_White_X
+                    # Called Global-reconstruction from-Local-to-Global
                     # ('[LOG][Flow_8_Parallel_ICA-Global_reconstruction]=====Modality_Y : Find Global A (Flow#5) using Con_White_Y and GlobalPCA_White_Y====')
 
 
@@ -2491,7 +2491,7 @@ def pica_infomax7(self):
                     # end if
                 # end if not STOPSIGN_Y :
 
-                # Test - Validation of Weight 
+                # Test - Validation of Weight
                 #%             test ---------------------
                 # This is for testing and validating if Weight is in Wrong direction or NOT.
                 # ('[LOG][Flow_8a_Parallel_ICA-Global_Weight_update] Testing and validating ===== Start =====')
@@ -2500,7 +2500,7 @@ def pica_infomax7(self):
                 LocalA_All_X_test = copy.copy(local_reconstruction8(self, weight_X, GlobalA_mixer_X, \
                     self.GlobalPCA_dewhite_X, self.Con_deWhite_X, self.NSUB_All_X, self.NCOM_All_X, SITE_NUM, B_GLOBAL, True))
 
-  
+
                 # ('[LOG][Flow_6_Parallel_ICA-Local_reconstruction]=====Modality_Y : Find local A using GlobalPCA_dewhite_Y and Con_deWhite_Y   =====')
 
                 LocalA_All_Y_test = copy.copy(local_reconstruction8(self, weight_Y, GlobalA_mixer_Y, \
@@ -2531,7 +2531,7 @@ def pica_infomax7(self):
                 if maxcorr_test[0] < maxcorr[0] :
                     printme = printme + "Wrong direction !!!! "  + "\n"
                     printme = printme + "\n"
-                    
+
                 # end if
                 #lossf3(max(STEP_X, STEP_Y)) = abs (temp)  # Not exist
                 #%             -----------------end test
@@ -2545,9 +2545,9 @@ def pica_infomax7(self):
         # Entropy
         else :
             costfunction_corrcoef_list_maxcorr_XY.append([Loop_num, 0])
-            costfunction_corrcoef_list_maxcorr_test_XY.append([Loop_num,0])  
+            costfunction_corrcoef_list_maxcorr_test_XY.append([Loop_num,0])
 
-        # end if if (STEP_X >2 and STEP_Y > 2) and ( not STOPSIGN_X or not STOPSIGN_Y ) 
+        # end if if (STEP_X >2 and STEP_Y > 2) and ( not STOPSIGN_X or not STOPSIGN_Y )
 
 
         if STOPSIGN_X == 1 and STOPSIGN_Y == 1 :
@@ -2556,8 +2556,8 @@ def pica_infomax7(self):
             STEP_LAST_Y = STEP_Y
             STEP_X = maxsteps                #% stop when weights stabilize
             STEP_Y = maxsteps
-        # end if 
-        
+        # end if
+
 
         #
         # Parrelle ICA - Global Weight update
@@ -2571,7 +2571,7 @@ def pica_infomax7(self):
         GlobalW_unmixer_Y = copy.copy (weight_Y)
 
         # ('[LOG][Flow_8a_Parallel_ICA-Global_Weight_update]=====End=====')
-    
+
         Loop_num = Loop_num + 1
 
     # End of IF Flow 6 - Flow 8a
@@ -2589,7 +2589,7 @@ def pica_infomax7(self):
 
     # Save all list into files.
     import datetime
-    today = datetime.datetime.today() 
+    today = datetime.datetime.today()
     YYYYMMDD = today.strftime('%Y%m%d%H%M')
     # np.savetxt( self.state['outputDirectory'] + "/Loop_list" + "_" + YYYYMMDD +".csv", Loop_list, delimiter=",")
     # np.savetxt( self.state['outputDirectory'] + "/Loop_list_X" + "_" + YYYYMMDD +".csv", Loop_list_X, delimiter=",")
@@ -2607,14 +2607,14 @@ def pica_infomax7(self):
     # np.savetxt( self.state['outputDirectory'] + "/costfunction_corrcoef_list_maxcorr_XY" + "_" + YYYYMMDD +".csv", costfunction_corrcoef_list_maxcorr_XY, delimiter=",")
     # np.savetxt( self.state['outputDirectory'] + "/costfunction_corrcoef_list_maxcorr_test_XY" + "_" + YYYYMMDD +".csv", costfunction_corrcoef_list_maxcorr_test_XY, delimiter=",")
 
-    self.mymaxcorr_list.append([self.RUN_NUMBER, round(mymaxcorr,4)])   
-    self.myentropy_list_X.append([self.RUN_NUMBER, round(myentropy_X,4)])   
-    self.myentropy_list_Y.append([self.RUN_NUMBER, round(myentropy_Y,4)])   
-    self.mySTEP_list_X.append([self.RUN_NUMBER, STEP_LAST_X])   
-    self.mySTEP_list_Y.append([self.RUN_NUMBER, STEP_LAST_Y])   
+    self.mymaxcorr_list.append([self.RUN_NUMBER, round(mymaxcorr,4)])
+    self.myentropy_list_X.append([self.RUN_NUMBER, round(myentropy_X,4)])
+    self.myentropy_list_Y.append([self.RUN_NUMBER, round(myentropy_Y,4)])
+    self.mySTEP_list_X.append([self.RUN_NUMBER, STEP_LAST_X])
+    self.mySTEP_list_Y.append([self.RUN_NUMBER, STEP_LAST_Y])
     self.RUN_NUMBER = self.RUN_NUMBER + 1
 
-    if ((change_X  > nochange) or (change_Y > nochange)) : 
+    if ((change_X  > nochange) or (change_Y > nochange)) :
         if ( (STEP_X) == (maxsteps)  or (STEP_Y) == (maxsteps) ):
             printme = printme + "!!!Reached max steps. Please reduce the constrained components in setup options and restart parallel ica."  + "\n"
         # end if
@@ -2646,5 +2646,3 @@ def pica_infomax7(self):
     self.cache['logs'].append(printme + "\n")
 
     return (GlobalW_unmixer_X, sphere_X, GlobalW_unmixer_Y, sphere_Y )
-
-
