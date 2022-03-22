@@ -1,16 +1,10 @@
 [
   {
-    "subjects_path": {
-      "value": "fmri_gene_full"
-    },
     "lambda": {
       "value": 1
     }
   },
   {
-    "subjects_path": {
-      "value": "fmri_gene_full"
-    },
     "lambda": {
       "value": 1
     }

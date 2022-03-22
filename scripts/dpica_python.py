@@ -85,8 +85,8 @@ if NUM_SUBJECT == 63:
     DATA_SITES = "siteAll63.txt"
     DATA_SITE1 = "site1_63_31.txt"
     DATA_SITE2 = "site2_63_32.txt"
-    DATA_PATH_X = "/fmri_gene_full/"
-    DATA_PATH_Y = "/fmri_gene_full/"
+    DATA_PATH_X = ""
+    DATA_PATH_Y = ""
     DATA_PATH_OUTPUT = MYFILENAME
     MASK_PATH_FILE_NAME = "/computation/assets/mask_fmri_pica_v4.nii.gz"
     MASK_PATH_X = "/computation/assets/"
@@ -211,7 +211,7 @@ def setUp(self):
     MASK_PATH_FILE_NAME = os.path.join('/computation/assets/mask_fmri_pica_v4.nii.gz')
     MASK_PATH_X = "/computation/assets/"
     DATA_PATH_X = self.state['baseDirectory']
-    DATA_PATH_Y = self.state['baseDirectory'] 
+    DATA_PATH_Y = self.state['baseDirectory']
     DATA_PATH_OUTPUT = self.state['outputDirectory'] + str(MYFILENAME)
     DATA_SITES_X = self.state['baseDirectory'] + "/Clean_data/"
 
