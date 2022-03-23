@@ -9,14 +9,14 @@
   },
   "computation": {
     "type": "docker",
-    "dockerImage": "coinstac-dpica",
+    "dockerImage": "coinstacteam/coinstac-dpica",
     "command": [
       "python",
       "\/computation\/scripts\/local_pipeline.py"
     ],
     "remote": {
       "type": "docker",
-      "dockerImage": "coinstac-dpica",
+      "dockerImage": "coinstacteam/coinstac-dpica",
       "command": [
         "python",
         "\/computation\/scripts\/remote_pipeline.py"
