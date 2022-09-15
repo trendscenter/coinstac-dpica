@@ -10,4 +10,4 @@ The full result files can be [found here](https://mygsu-my.sharepoint.com/:f:/r/
 
 As shown here:
 
-![Results View](https://raw.githubusercontent.com/trendscenter/coinstac-dpica/master/test/results/results.png "Results View")
+![Results View](https://raw.githubusercontent.com/trendscenter/coinstac-dpica/ui-adjustments/test/results/results.png "Results View")
