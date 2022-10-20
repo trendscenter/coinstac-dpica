@@ -6,7 +6,7 @@ This was a 2 site run in COINSTAC UI with a pipeline set up to reflect the setti
 
 #### Results Info
 
-The full result files can be [found here](https://mygsu-my.sharepoint.com/:f:/r/personal/jromero7_gsu_edu/Documents/dpica_results?csf=1&web=1&e=iRYanm)
+The full result files can be [found here](https://mygsu-my.sharepoint.com/:f:/g/personal/jromero7_gsu_edu/Er1M5ogWaEJDnqSML86GL48BmgR9uKAB5CeEEYr2tDIE2A?e=i7d0gM)
 
 As shown here:
 
