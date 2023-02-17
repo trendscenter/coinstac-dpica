@@ -401,7 +401,7 @@ def global_setUp(self):
     data_path_for_site = self.state['baseDirectory']
 
     for site_folders in os.listdir(data_path_for_site):
-        data_path_file_name = data_path_for_site + "//" + str(site_folders) + "//"
+        data_path_file_name = os.path.join(data_path_for_site,str(site_folders))
 
         # Loading Local_U to Global_U
         file_name = "U_X1.csv"
