@@ -11,26 +11,30 @@ import numpy as np
 
 sep = os.sep
 
+def get_files_or_folders_in_dir(dir, fileType = 'directories'):
+    with os.scandir(dir) as directory:
+        if fileType == 'directories':
+            filesOrDirs = [entry.name for entry in directory if entry.is_dir()]
+        else:
+            filesOrDirs = [entry.name for entry in directory if not entry.is_dir()]
+    return filesOrDirs
 
-def pica_masked_Modality_X_creation( data_path_input, mask_file_location_input):
+def pica_masked_Modality_X_creation(data_path_input, mask_file_location_input):
     mask_data = nib.load(mask_file_location_input).get_fdata()  #
-
-    folder1 = os.listdir(data_path_input)
+    folder1 = get_files_or_folders_in_dir(data_path_input)
     fmri_1d_masked_all = []
     fmri_1d_mat_masked_all = []
     fmri_subject_all = []
 
     for subject_folders in folder1:
         fmri_subject_all.append(subject_folders)
-        folder2 = os.listdir(data_path_input + "//" + subject_folders)
+        folder2 = get_files_or_folders_in_dir(os.path.join(data_path_input, subject_folders))
         for fmri_folders in folder2:
-            folder3 = os.listdir(data_path_input + "//" + subject_folders + \
-                                 "//" + fmri_folders)
-            for img_file in folder3:
+            files3 = get_files_or_folders_in_dir(os.path.join(data_path_input, subject_folders, fmri_folders), 'files')
+            for img_file in files3:
                 if img_file[-3:] == "img":
 
-                    data = nib.load(data_path_input + "//" + subject_folders + \
-                                    "//" + fmri_folders + "//" + img_file).get_fdata()
+                    data = nib.load(os.path.join(data_path_input, subject_folders, fmri_folders, img_file)).get_fdata()
                     data = np.squeeze(data, 3)
                     # Masking data
                     data_masked = data[mask_data > 0]
@@ -47,15 +51,14 @@ def pica_masked_Modality_X_creation( data_path_input, mask_file_location_input):
 
 def pica_Modality_Y_creation(data_path_input):
 
-    folder1 = os.listdir(data_path_input)
+    folder1 = get_files_or_folders_in_dir(data_path_input)
     snp_1d_all = []
 
     for subject_folders in folder1:
-        folder2 = os.listdir(data_path_input + "//" + subject_folders)
+        folder2 = get_files_or_folders_in_dir(os.path.join(data_path_input, subject_folders))
         for snp_folders in folder2:
-            folder3 = os.listdir(data_path_input + "//" + subject_folders + \
-                                 "//" + snp_folders)
-            for img_file in folder3:
+            files3 = get_files_or_folders_in_dir(os.path.join(data_path_input, subject_folders, snp_folders), 'files')
+            for img_file in files3:
                 if img_file[-3:] == "asc":
                     fname = os.path.join(data_path_input, subject_folders, snp_folders, img_file)
                     snp_1d_all.append(np.genfromtxt(fname, dtype=float))
@@ -86,4 +89,3 @@ def pica_import_csv_to_array(data_path_input, file_name_input):
 
 
     return (array_1d_output)
-

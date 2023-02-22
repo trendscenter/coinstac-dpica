@@ -85,8 +85,8 @@ if NUM_SUBJECT == 63:
     DATA_SITES = "siteAll63.txt"
     DATA_SITE1 = "site1_63_31.txt"
     DATA_SITE2 = "site2_63_32.txt"
-    DATA_PATH_X = "/fmri_gene_full/"
-    DATA_PATH_Y = "/fmri_gene_full/"
+    DATA_PATH_X = ""
+    DATA_PATH_Y = ""
     DATA_PATH_OUTPUT = MYFILENAME
     MASK_PATH_FILE_NAME = "/computation/assets/mask_fmri_pica_v4.nii.gz"
     MASK_PATH_X = "/computation/assets/"
@@ -210,10 +210,10 @@ def setUp(self):
     printme = ""
     MASK_PATH_FILE_NAME = os.path.join('/computation/assets/mask_fmri_pica_v4.nii.gz')
     MASK_PATH_X = "/computation/assets/"
-    DATA_PATH_X = self.state['baseDirectory']
-    DATA_PATH_Y = self.state['baseDirectory'] 
-    DATA_PATH_OUTPUT = self.state['outputDirectory'] + str(MYFILENAME)
-    DATA_SITES_X = self.state['baseDirectory'] + "/Clean_data/"
+    DATA_PATH_X = os.path.join(self.state['baseDirectory'], self.input['data'] if self.mode == 'LOCAL' else '')
+    DATA_PATH_Y = os.path.join(self.state['baseDirectory'], self.input['data'] if self.mode == 'LOCAL' else '')
+    DATA_PATH_OUTPUT = os.path.join(self.state['outputDirectory'], str(MYFILENAME))
+    DATA_SITES_X = os.path.join(self.state['baseDirectory'], "/Clean_data/")
 
     self.MASK_PATH_FILE_NAME = MASK_PATH_FILE_NAME
     self.MASK_PATH_X = MASK_PATH_X
@@ -401,7 +401,7 @@ def global_setUp(self):
     data_path_for_site = self.state['baseDirectory']
 
     for site_folders in os.listdir(data_path_for_site):
-        data_path_file_name = data_path_for_site + "//" + str(site_folders) + "//"
+        data_path_file_name = os.path.join(data_path_for_site,str(site_folders))
 
         # Loading Local_U to Global_U
         file_name = "U_X1.csv"
